@@ -1,4 +1,4 @@
-# UC Berkeley CALICO Spring Coding Competition 2025 🏆
+#  UC Berkeley CALICO Spring Coding Competition 2025 🏆
 
 ## 🚀 My Participation in CALICO Spring 2025
 
