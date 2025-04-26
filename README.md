@@ -58,9 +58,7 @@ README.md    → This file
 
 ## 🖼️ Team Screenshot
 
-> *(TeamMembers.jpg to be added here)*
-
-![Team Members](screenshots/TeamMembers.jpg)
+![Team Members](Team%20Members.jpg)
 
 ---
 
