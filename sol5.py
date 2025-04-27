@@ -1,40 +1,22 @@
-def count_uwu_subsequences(input_string):
-    """
-    Counts how many "uwu" subsequences are present in the given string.
-    
-    A "uwu" subsequence is defined as a 'u' followed by a 'w' with another 'u' after it, 
-    but the 'w' must be positioned between the two 'u' characters.
-    
-    Args:
-        input_string (str): The string in which we want to find "uwu" subsequences.
-        
-    Returns:
-        int: The total number of "uwu" subsequences found in the input string.
-    """
-    u_positions = []  # This list stores the positions of 'u' characters
-    
-    # Loop through the string to find all 'u' characters and store their positions
-    for index in range(len(input_string)):
-        if input_string[index] == 'u':
-            u_positions.append(index)
-    
-    uwu_count = 0  # Counter for the number of "uwu" subsequences
-    
-    # For each pair of 'u's, check if there's a 'w' between them
-    for first_u_index in range(len(u_positions)):
-        for second_u_index in range(first_u_index + 1, len(u_positions)):
-            
-            # Check if there's a 'w' between these two 'u's
-            for middle_char_index in range(u_positions[first_u_index] + 1, u_positions[second_u_index]):
-                if input_string[middle_char_index] == 'w':
-                    uwu_count += 1  # If 'w' is found, count it as a "uwu" subsequence
-                    break  # No need to check further once a valid subsequence is found
-    
-    return uwu_count
+def count_total_uwu_subsequences(given_input_string):
 
+    list_of_u_letter_positions = []  # This list will store the positions (indexes) of all 'u' letters in the string
+    # Find and store positions of all 'u' characters
+    for current_character_index in range(len(given_input_string)):
+        if given_input_string[current_character_index] == 'u':
+            list_of_u_letter_positions.append(current_character_index)
+    total_uwu_subsequences_found = 0  # This will keep track of the number of "uwu" subsequences found
+    # Check all possible pairs of 'u' characters
+    for first_u_letter_index in range(len(list_of_u_letter_positions)):
+        for second_u_letter_index in range(first_u_letter_index + 1, len(list_of_u_letter_positions)):
+            # Now we check if there is any 'w' character between these two 'u' characters
+            for character_between_us_index in range(list_of_u_letter_positions[first_u_letter_index] + 1, list_of_u_letter_positions[second_u_letter_index]):
+                if given_input_string[character_between_us_index] == 'w':
+                    total_uwu_subsequences_found += 1  # If a 'w' is found, this forms a "uwu" subsequence
+                    break  # No need to search further between this pair once we find one 'w'
+    return total_uwu_subsequences_found
 
-# --- Example usage ---
-test_strings = ["uwwu", "uyuwuuxuwu", "uuwuu", "wwuuouw"]  # A list of strings to test
-for test_string in test_strings:
-    result = count_uwu_subsequences(test_string)
-    print(f'The number of "uwu" subsequences in "{test_string}" is: {result}')
+list_of_input_strings = ["uwwu", "uyuwuuxuwu", "uuwuu", "wwuuouw"]  # List of strings to test
+for current_test_string in list_of_input_strings:
+    uwu_subsequence_count = count_total_uwu_subsequences(current_test_string)
+    print(f'The number of "uwu" subsequences in "{current_test_string}" is: {uwu_subsequence_count}')
