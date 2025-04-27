@@ -1,58 +1,54 @@
+class Block:
+    def __init__(self, x0, y0, x1, y1):
+        self.x0 = x0
+        self.y0 = y0
+        self.x1 = x1
+        self.y1 = y1
+        self.mass = (x1 - x0) * (y1 - y0)
+        self.cm_x = (x0 + x1) / 2
+        self.cm_y = (y0 + y1) / 2
+        self.resting_on = None
+
+def calculate_center_of_mass(blocks, idx):
+    total_mass = blocks[idx].mass
+    total_cm_x = blocks[idx].cm_x * blocks[idx].mass
+    total_cm_y = blocks[idx].cm_y * blocks[idx].mass
+    stack = [idx]
+    while stack:
+        current = stack.pop()
+        if blocks[current].resting_on is not None:
+            rest_idx = blocks[current].resting_on
+            total_mass += blocks[rest_idx].mass
+            total_cm_x += blocks[rest_idx].cm_x * blocks[rest_idx].mass
+            total_cm_y += blocks[rest_idx].cm_y * blocks[rest_idx].mass
+            stack.append(rest_idx)
+    cm_x = total_cm_x / total_mass
+    cm_y = total_cm_y / total_mass
+    return cm_x, cm_y, total_mass
+
+def check_stability(blocks):
+    for idx, block in enumerate(blocks):
+        if block.resting_on is not None:
+            rest_idx = block.resting_on
+            cm_x, cm_y, total_mass = calculate_center_of_mass(blocks, idx)
+            resting_block = blocks[rest_idx]
+            if not (resting_block.x0 <= cm_x <= resting_block.x1):
+                return "Unstable"
+    return "Stable"
+
 def solve():
-    T = int(input())  # Number of test cases
+    T = int(input())
     for _ in range(T):
-        N = int(input())  # Number of blocks
-        
-        # Read block data
+        N = int(input())
         blocks = []
         for i in range(N):
-            X0, Y0, X1, Y1 = map(int, input().split())
-            blocks.append((X0, Y0, X1, Y1, (X1 - X0) * (Y1 - Y0), (X0 + X1) / 2, (Y0 + Y1) / 2))  # Append block details
-        
-        # We need to simulate the structure and check if it is stable
-        
-        # Structure to keep track of each block's center of mass and which block it rests on
-        parent = [-1] * N  # -1 means no parent (resting on the floor)
-        # Read the rest positions of blocks (if they rest on others)
-        for i in range(1, N):
-            parent[i] = int(input())  # For block i, it rests on the parent block
-        
-        # We need to calculate the center of mass for each block and substructure
-        # Create a list to store the center of mass of each block and its combined substructure
-        mass = [block[4] for block in blocks]
-        cm = [(block[5], block[6]) for block in blocks]  # (center of mass x, center of mass y)
-        
-        # Check if the structure is stable or not
-        def calculate_cm(i):
-            if parent[i] == -1:  # It's on the floor
-                return cm[i]
-            else:
-                # If it has a parent, calculate its combined center of mass with the parent
-                px, py = calculate_cm(parent[i])  # Parent's center of mass
-                p_mass = mass[parent[i]]
-                total_mass = mass[i] + p_mass
-                x_cm = (cm[i][0] * mass[i] + px * p_mass) / total_mass
-                y_cm = (cm[i][1] * mass[i] + py * p_mass) / total_mass
-                cm[i] = (x_cm, y_cm)
-                return cm[i]
-        
-        # Calculate the center of mass for all blocks
+            x0, y0, x1, y1 = map(int, input().split())
+            blocks.append(Block(x0, y0, x1, y1))
         for i in range(N):
-            calculate_cm(i)
-        
-        # Now check if the center of mass of any block is stable
-        stable = True
-        for i in range(N):
-            if parent[i] != -1:
-                px, py = cm[parent[i]]
-                if not (blocks[parent[i]][0] <= cm[i][0] <= blocks[parent[i]][2]):
-                    stable = False
-                    break
-        
-        if stable:
-            print("Stable")
-        else:
-            print("Unstable")
+            for j in range(i + 1, N):
+                if blocks[i].x0 <= blocks[j].cm_x <= blocks[i].x1 and blocks[i].y1 == blocks[j].y0:
+                    blocks[j].resting_on = i
+        result = check_stability(blocks)
+        print(result)
 
-# Call the solve function to handle inputs and outputs
 solve()
